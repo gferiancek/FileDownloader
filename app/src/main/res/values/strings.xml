@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">File Downloader</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="download_complete_channel_id">download_complete</string>
+    <string name="download_complete_channel_name">Download Complete</string>
+    <string name="download_complete_channel_description">Shows information about downloaded files.</string>
 </resources>

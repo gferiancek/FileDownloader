@@ -1,11 +1,16 @@
 package com.example.filedownloader.ui
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import com.example.filedownloader.R
@@ -30,14 +35,30 @@ class DownloadFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
-        viewModel.eventReceived.observe(viewLifecycleOwner) { string ->
-            if (string.isNotBlank()) {
-                Toast.makeText(requireContext(), string, Toast.LENGTH_SHORT).show()
-                viewModel.onReceivedCompleted()
-            }
-        }
+        createChannel(
+            getString(R.string.download_complete_channel_id),
+            getString(R.string.download_complete_channel_name)
+        )
 
         // Inflate the layout for this fragment
         return binding.root
+    }
+
+    private fun createChannel(id: String, name: String) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationChannel = NotificationChannel(
+                id,
+                name,
+                NotificationManager.IMPORTANCE_HIGH
+            )
+            notificationChannel.apply {
+                enableLights(true)
+                lightColor = Color.MAGENTA
+                enableVibration(true)
+                description = getString(R.string.download_complete_channel_description)
+            }
+            val notificationManager = requireActivity().getSystemService(NotificationManager::class.java)
+            notificationManager.createNotificationChannel(notificationChannel)
+        }
     }
 }
