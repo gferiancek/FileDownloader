@@ -6,13 +6,13 @@ Main focus of this project is on giving the user contextual information via inte
 as implementing custom views and animations with MotionLayout.
 
 ### 1. Implement Download Manager to successfully download a file from the internet.
-- [ ] Download manager wasnt' covered in the course, so research on how to implement it.
-- [ ] Should take a URL and download the file.  Learn how to get the progress of the download the result. (failed, etc).
+- [x] Download manager wasnt' covered in the course, so research on how to implement it.
+- [x] Should take a URL and download the file.  Learn how to get the progress of the download the result. (failed, etc).
 
 ### 2. Implement Notification Manager
-- [ ] Show a notification as the download starts.  Add a cancel/pause action. Since the user will be in the app, make it low priority.
-- [ ] Show progress of the download within the notification.
-- [ ] Once the download is finished, show the status along with an action to navigate to it's detail page. Heads Up/High Priority.
+- [x] Show a notification as the download starts.  Add a cancel/pause action. Since the user will be in the app, make it low priority.
+- [x] Show progress of the download within the notification.
+- [x] Once the download is finished, show the status along with an action to navigate to it's detail page. Heads Up/High Priority.
 - [ ] OPTIONAL:  Possibly find a way to support downloading multiple files at once.
   - [ ] We'd need to generate a new notification ID upon starting the download and cache it so we can update the notification.
   
