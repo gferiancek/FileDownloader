@@ -40,6 +40,24 @@ class DownloadFragment : Fragment() {
             getString(R.string.download_complete_channel_name)
         )
 
+        viewModel.eventStartDownload.observe(viewLifecycleOwner) { isDownloading ->
+            if (isDownloading) {
+                val url = when (binding.radioGroup.checkedRadioButtonId) {
+                    binding.mb100.id -> binding.mb100.tag.toString()
+                    binding.gb1.id -> binding.gb1.tag.toString()
+                    else -> {
+                        Toast.makeText(requireContext(), "Please select a file to download", Toast.LENGTH_SHORT).show()
+                        // return "" as the url since no download is selected
+                        ""
+                    }
+                }
+                if (url.isNotBlank()) {
+                    viewModel.downloadData(url)
+                }
+                viewModel.onStartDownloadCompleted()
+            }
+        }
+
         // Inflate the layout for this fragment
         return binding.root
     }
