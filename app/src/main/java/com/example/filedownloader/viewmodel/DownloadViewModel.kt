@@ -11,9 +11,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Environment
-import android.os.FileUtils
 import android.webkit.URLUtil
-import android.widget.Toast
 import androidx.lifecycle.*
 import com.example.filedownloader.R
 import com.example.filedownloader.model.DownloadedFile
@@ -34,13 +32,8 @@ class DownloadViewModel(private val app: Application) : AndroidViewModel(app) {
         app.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
     private val _progress = MutableLiveData<Int>()
-    val progress: LiveData<String>
-        get() = _progress.map { progress ->
-            when (progress) {
-                -1, 0 -> ""
-                else -> "$progress% completed"
-            }
-        }
+    val progress: LiveData<Int>
+        get() = _progress
 
     private val _eventStartDownload = MutableLiveData<Boolean>()
     val eventStartDownload = _eventStartDownload
@@ -50,11 +43,10 @@ class DownloadViewModel(private val app: Application) : AndroidViewModel(app) {
             var id: Long
             intent?.let {
                 id = it.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-                sendNotification(parseDownload(id))
+                sendNotification(parseDownloadedFile(id))
             }
         }
     }
-
     init {
         app.registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
     }
@@ -64,6 +56,7 @@ class DownloadViewModel(private val app: Application) : AndroidViewModel(app) {
      * keeps track of the download progress via DownloadUtils' getProgressUpdate function.
      */
     fun downloadData(url: String) {
+        notificationManager.cancelAll()
         val fileName = URLUtil.guessFileName(url, null, null)
 
         val request = DownloadManager.Request(Uri.parse(url))
@@ -79,7 +72,7 @@ class DownloadViewModel(private val app: Application) : AndroidViewModel(app) {
             downloadManager.getProgressUpdate(downloadId)
                 .flowOn(Dispatchers.Default).collect { progress ->
                     _progress.value = progress
-                    // progress is returned as -1 if the download as failed. Sometimes on a failed download
+                    // progress is returned as -1 if the download has failed. Sometimes on a failed download
                     // the app would call updateProgress after onReceived had been called, and would
                     // replace the "Download Failed" notification with an ongoing notification that could
                     // not be canceled.  (Logic to cancel the ongoing notification is in onReceive,
@@ -93,7 +86,7 @@ class DownloadViewModel(private val app: Application) : AndroidViewModel(app) {
     }
 
 
-     fun parseDownload(downloadId: Long): DownloadedFile {
+     fun parseDownloadedFile(downloadId: Long): DownloadedFile {
         val downloadQuery = DownloadManager.Query().setFilterById(downloadId)
         val cursor = downloadManager.query(downloadQuery)
 
@@ -139,6 +132,7 @@ class DownloadViewModel(private val app: Application) : AndroidViewModel(app) {
                 // Cancels the ongoing notification from updateProgress, and replaces it with a new
                 // one with information about the status of the download.
                 notificationManager.cancelAll()
+                // If filePath is blank, the download failed and we show the reason instead.
                 val notificationMessage = when (downloadedFile.filePath.isNotBlank()) {
                     true -> downloadedFile.filePath
                     false -> downloadedFile.reason
@@ -149,7 +143,6 @@ class DownloadViewModel(private val app: Application) : AndroidViewModel(app) {
                     notificationMessage,
                     app
                 )
-                Toast.makeText(app, downloadedFile.toString(), Toast.LENGTH_SHORT).show()
             }
         }
     }

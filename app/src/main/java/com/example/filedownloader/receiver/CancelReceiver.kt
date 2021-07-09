@@ -11,9 +11,8 @@ import android.content.Intent
 class CancelReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         val downloadManager = context?.getSystemService(DOWNLOAD_SERVICE) as DownloadManager
-        val downloadId = intent?.getLongExtra("download_id", 0)
-        downloadId?.let {
-            downloadManager.remove(it)
+        intent?.let {
+            downloadManager.remove(intent.getLongExtra("download_id", 0))
         }
     }
 }
