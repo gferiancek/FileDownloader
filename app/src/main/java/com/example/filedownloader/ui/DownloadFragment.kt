@@ -12,12 +12,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
+import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import com.example.filedownloader.R
 import com.example.filedownloader.databinding.FragmentDownloadBinding
 import com.example.filedownloader.viewmodel.DownloadViewModel
+import com.example.filedownloader.views.ButtonState
 
 class DownloadFragment : Fragment() {
 
@@ -30,7 +32,6 @@ class DownloadFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // binding logic
         binding = DataBindingUtil.inflate(
             inflater,
             R.layout.fragment_download,
@@ -40,23 +41,22 @@ class DownloadFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
-        // notifications logic
         createChannel(
             getString(R.string.download_complete_channel_id),
             getString(R.string.download_complete_channel_name)
         )
 
-        // viewModel Observers logic
+        binding.radioGroup.setOnCheckedChangeListener { group, checkedId ->
+            if (group.checkedRadioButtonId != -1) {
+                binding.button.updateButtonState(ButtonState.Inactive)
+            }
+        }
         viewModel.eventStartDownload.observe(viewLifecycleOwner) { isDownloading ->
             if (isDownloading) {
                 val url = when (binding.radioGroup.checkedRadioButtonId) {
                     binding.mb100.id -> binding.mb100.tag.toString()
                     binding.gb1.id -> binding.gb1.tag.toString()
-                    else -> {
-                        Toast.makeText(requireContext(), "Please select a file to download", Toast.LENGTH_SHORT).show()
-                        // return "" as the url since no download is selected
-                        ""
-                    }
+                    else -> ""
                 }
                 if (url.isNotBlank()) {
                     viewModel.downloadData(url)
@@ -78,8 +78,6 @@ class DownloadFragment : Fragment() {
                 animateProgress(downloadStatus, progressAnimator)
             }
         }
-
-        // Inflate the layout for this fragment
         return binding.root
     }
 
@@ -146,7 +144,7 @@ class DownloadFragment : Fragment() {
 
     /**
      * Since the LoadingButton uses an Arc for the progress indicator, we convert the progress Int
-     * (which ranges from -1 - 100) to the equivalent range of 0 - 360 for a circle.  Simple to do by multiplying
+     * (which ranges from -1 - 100) to the equivalent range of 0 - 360 for an arc.  Simple to do by multiplying
      * the progress int by 3.6f. (100 : 360 is a 1 : 3.6 ratio)
      */
     private fun calculateProgressFloat(progress: Int): Float {
@@ -167,8 +165,7 @@ class DownloadFragment : Fragment() {
                 id,
                 name,
                 NotificationManager.IMPORTANCE_HIGH
-            )
-            notificationChannel.apply {
+            ).apply {
                 enableLights(true)
                 lightColor = Color.MAGENTA
                 enableVibration(true)
