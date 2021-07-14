@@ -4,7 +4,6 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
 import androidx.core.app.NotificationCompat
 import androidx.navigation.NavDeepLinkBuilder
 import com.example.filedownloader.MainActivity
@@ -13,8 +12,13 @@ import com.example.filedownloader.receiver.CancelReceiver
 
 const val NOTIFICATION_ID = 0
 const val REQUEST_CODE = 0
-fun NotificationManager.sendDownloadCompletedNotification(title: String, status: String, message: String, appContext: Context) {
 
+fun NotificationManager.sendDownloadCompletedNotification(
+    title: String,
+    status: String,
+    message: String,
+    appContext: Context
+) {
     val pendingIntent = NavDeepLinkBuilder(appContext)
         .setComponentName(MainActivity::class.java)
         .setGraph(R.navigation.nav_graph)
@@ -25,21 +29,26 @@ fun NotificationManager.sendDownloadCompletedNotification(title: String, status:
         appContext,
         appContext.getString(R.string.download_complete_channel_id)
     )
-        .setStyle(NotificationCompat.BigTextStyle()
-            .bigText(message)
-            .setBigContentTitle(status))
+        .setStyle(
+            NotificationCompat.BigTextStyle()
+                .bigText(message)
+                .setBigContentTitle(status)
+        )
         .setSmallIcon(R.drawable.ic_baseline_download_24)
         .setContentTitle(title)
         .setContentText(status)
         .setContentIntent(pendingIntent)
         .setAutoCancel(true)
-
-
     notify(NOTIFICATION_ID, notificationBuilder.build())
 }
 
-fun NotificationManager.updateProgress(title: String, message: String, progress: Int, downloadId: Long, appContext: Context) {
-
+fun NotificationManager.updateProgress(
+    title: String,
+    message: String,
+    progress: Int,
+    downloadId: Long,
+    appContext: Context
+) {
     val cancelIntent = Intent(appContext, CancelReceiver::class.java)
     cancelIntent.putExtra("download_id", downloadId)
     val cancelPendingIntent = PendingIntent.getBroadcast(
@@ -49,7 +58,7 @@ fun NotificationManager.updateProgress(title: String, message: String, progress:
         PendingIntent.FLAG_UPDATE_CURRENT
     )
 
-    val notifBuilder = NotificationCompat.Builder(
+    val notificationBuilder = NotificationCompat.Builder(
         appContext,
         appContext.getString(R.string.download_complete_channel_id)
     )
@@ -64,6 +73,5 @@ fun NotificationManager.updateProgress(title: String, message: String, progress:
             appContext.getString(R.string.action_cancel),
             cancelPendingIntent
         )
-
-    notify(NOTIFICATION_ID, notifBuilder.build())
+    notify(NOTIFICATION_ID, notificationBuilder.build())
 }

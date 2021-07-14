@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.example.filedownloader.viewmodel.DownloadViewModel" />
@@ -17,49 +18,50 @@
             android:id="@+id/tv_description"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="32dp"
-            android:textSize="20sp"
+            android:layout_marginStart="@dimen/margin_large"
+            android:layout_marginEnd="@dimen/margin_large"
+            android:textSize="@dimen/text_size"
             android:textAlignment="center"
             android:textColor="@color/black"
             android:text="@string/description"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/radio_group"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <RadioGroup
             android:id="@+id/radio_group"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="32dp"
+            android:layout_marginStart="@dimen/margin_large"
+            android:layout_marginEnd="@dimen/margin_large"
             app:layout_constraintVertical_chainStyle="packed"
             app:layout_constraintTop_toBottomOf="@id/tv_description"
             app:layout_constraintBottom_toTopOf="@id/button"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" >
+            app:layout_constraintEnd_toEndOf="parent">
+
             <RadioButton
                 android:id="@+id/mb_100"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="100mb - Pass"
-                android:textSize="20sp"
+                android:text="@string/mb_100_text"
+                android:textSize="@dimen/text_size"
                 android:tag="https://speed.hetzner.de/100MB.bin" />
 
             <RadioButton
                 android:id="@+id/gb_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="1gb - Fail"
-                android:textSize="20sp"
+                android:text="@string/gb_1_text"
+                android:textSize="@dimen/text_size"
                 android:tag="https://speed.hetzner.de/fail" />
         </RadioGroup>
 
         <com.example.filedownloader.views.LoadingButton
-            android:layout_marginStart="48dp"
-            android:layout_marginEnd="48dp"
-            android:layout_marginBottom="48dp"
+            android:layout_marginStart="@dimen/margin_extra_large"
+            android:layout_marginEnd="@dimen/margin_extra_large"
+            android:layout_marginBottom="@dimen/margin_extra_large"
             android:id="@+id/button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

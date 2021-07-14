@@ -12,7 +12,10 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.os.Environment
 import android.webkit.URLUtil
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.filedownloader.R
 import com.example.filedownloader.model.DownloadedFile
 import com.example.filedownloader.utils.getProgressUpdate
@@ -47,6 +50,7 @@ class DownloadViewModel(private val app: Application) : AndroidViewModel(app) {
             }
         }
     }
+
     init {
         app.registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
     }
@@ -86,7 +90,11 @@ class DownloadViewModel(private val app: Application) : AndroidViewModel(app) {
     }
 
 
-     fun parseDownloadedFile(downloadId: Long): DownloadedFile {
+    /**
+     * Fun that takes the downloadId and pulls the desired information from the DownloadManager Query for that id
+     * and returns a DownloadedFile object with the extracted information.
+     */
+    fun parseDownloadedFile(downloadId: Long): DownloadedFile {
         val downloadQuery = DownloadManager.Query().setFilterById(downloadId)
         val cursor = downloadManager.query(downloadQuery)
 
@@ -104,7 +112,10 @@ class DownloadViewModel(private val app: Application) : AndroidViewModel(app) {
                         title = cursor.getString(titleIndex)
                         filePath = cursor.getString(filePathIndex)
                         status = app.getString(R.string.successful)
-                        size = android.text.format.Formatter.formatShortFileSize(app, cursor.getLong(sizeIndex))
+                        size = android.text.format.Formatter.formatShortFileSize(
+                            app,
+                            cursor.getLong(sizeIndex)
+                        )
                     }
                 }
                 DownloadManager.STATUS_FAILED -> {
@@ -126,7 +137,7 @@ class DownloadViewModel(private val app: Application) : AndroidViewModel(app) {
                 // status is only blank if the notification is cancelled, so if that is
                 // the case we can cancel the notification and reset the progress.
                 notificationManager.cancelAll()
-                _progress.value = 0
+                _progress.value = -1
             }
             false -> {
                 // Cancels the ongoing notification from updateProgress, and replaces it with a new

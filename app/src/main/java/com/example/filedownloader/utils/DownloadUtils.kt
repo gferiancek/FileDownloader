@@ -12,6 +12,8 @@ fun DownloadManager.getProgressUpdate(id: Long) = flow {
     lateinit var cursor: Cursor
 
     while (isDownloading) {
+        // If we reuse the cursor within the loop, we don't receive any progress updates.  Because of that,
+        // we reassign the cursor to the query to get the latest information about download progress.
         cursor = query(query)
         if (cursor.moveToFirst()) {
             val totalBytesIndex = cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES)
@@ -21,9 +23,8 @@ fun DownloadManager.getProgressUpdate(id: Long) = flow {
 
             val totalBytes = cursor.getLong(totalBytesIndex)
             val bytesDownloaded = cursor.getLong(bytesDownloadedIndex)
-            val status = cursor.getInt(statusIndex)
 
-            when (status) {
+            when (cursor.getInt(statusIndex)) {
                 DownloadManager.STATUS_RUNNING -> {
                     progress = when (totalBytes) {
                         // COLUMN_TOTAL_SIZE_BYTES will return -1 if the total size isn't available,

@@ -8,4 +8,6 @@
     <string name="successful">Successful</string>
     <string name="failed">Failed</string>
     <string name="description">Welcome to the File Downloader app. Select one of the two files below to download them to your device. One is designed to fail to show off all states of the custom download button.</string>
+    <string name="mb_100_text">100mb - Pass</string>
+    <string name="gb_1_text">1gb - Fail</string>
 </resources>
