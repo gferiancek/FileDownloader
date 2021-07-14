@@ -7,4 +7,5 @@
     <string name="action_cancel">Cancel</string>
     <string name="successful">Successful</string>
     <string name="failed">Failed</string>
+    <string name="description">Welcome to the File Downloader app. Select one of the two files below to download them to your device. One is designed to fail to show off all states of the custom download button.</string>
 </resources>
