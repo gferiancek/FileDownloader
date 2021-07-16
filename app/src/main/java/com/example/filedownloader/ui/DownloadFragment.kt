@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -40,10 +41,8 @@ class DownloadFragment : Fragment() {
         )
 
         binding.radioGroup.setOnCheckedChangeListener { _, checkedId ->
-            val buttonState = binding.button.getState()
             if (checkedId != -1 &&
-                buttonState != LoadingButton.ButtonState.Inactive &&
-                buttonState != LoadingButton.ButtonState.Downloading
+                binding.button.buttonState != LoadingButton.ButtonState.Downloading
             ) {
                 binding.button.animateToNewState(LoadingButton.ButtonState.Inactive)
             }
@@ -51,20 +50,35 @@ class DownloadFragment : Fragment() {
 
         viewModel.eventStartDownload.observe(viewLifecycleOwner) { isDownloading ->
             if (isDownloading) {
-                val url = when (binding.radioGroup.checkedRadioButtonId) {
-                    binding.mb100.id -> binding.mb100.tag.toString()
-                    else -> binding.gb1.tag.toString()
+                when (binding.button.buttonState) {
+                    LoadingButton.ButtonState.Disabled -> Toast.makeText(
+                        requireContext(),
+                        getString(R.string.no_file_selected),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    else -> {
+                        binding.button.buttonState = LoadingButton.ButtonState.Downloading
+                        val checkedId = binding.radioGroup.checkedRadioButtonId
+                        viewModel.downloadData(getUrl(checkedId))
+                        viewModel.onStartDownloadCompleted()
+                    }
                 }
-                binding.button.updateButtonState(LoadingButton.ButtonState.Downloading)
-                viewModel.downloadData(url)
-                viewModel.onStartDownloadCompleted()
             }
         }
+
         viewModel.progress.observe(viewLifecycleOwner) { downloadStatus ->
             binding.button.animateProgress(downloadStatus)
         }
 
         return binding.root
+    }
+
+    private fun getUrl(checkedId: Int) : String {
+        return when (checkedId) {
+            R.id.mb_100 -> binding.mb100.tag.toString()
+            R.id.gb_1 -> binding.gb1.tag.toString()
+            else -> ""
+        }
     }
 
     private fun createChannel(id: String, name: String) {

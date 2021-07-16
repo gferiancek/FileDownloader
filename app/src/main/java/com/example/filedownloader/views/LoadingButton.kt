@@ -10,6 +10,7 @@ import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.BounceInterpolator
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
 import androidx.core.content.res.ResourcesCompat
@@ -38,9 +39,12 @@ class LoadingButton @JvmOverloads constructor(
         ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_download_24, null)
     private var notAnimatingProgress = true
 
-    // 360f = 100% downloaded.  By initializing to this value, it adds a nice animation on the progress
-    // bar when starting a download.  (Animates from 360f to 0f and is just a little visual flair while the download starts.)
-    private var downloadProgress = 360f
+    private var sweepAngle = 0f
+        set(sweepAngle) {
+            field = sweepAngle
+            invalidate()
+        }
+    private var downloadProgress = 0f
         set(downloadProgress) {
             field = downloadProgress
             invalidate()
@@ -53,7 +57,6 @@ class LoadingButton @JvmOverloads constructor(
     private var paintColor: Int = Color.GRAY
         set(paintColor) {
             field = paintColor
-            mainCirclePaint.color = paintColor
             invalidate()
         }
 
@@ -65,11 +68,9 @@ class LoadingButton @JvmOverloads constructor(
     private var iconColor = 0
 
     init {
-        isEnabled = false
-
         context.withStyledAttributes(attrs, R.styleable.LoadingButton) {
             baseColor = getColor(
-                R.styleable.LoadingButton_buttonColor,
+                R.styleable.LoadingButton_baseColor,
                 MaterialColors.getColor(context, R.attr.colorPrimary, 0)
             )
             completedColor = getColor(R.styleable.LoadingButton_completedColor, Color.GREEN)
@@ -103,13 +104,10 @@ class LoadingButton @JvmOverloads constructor(
         color = progressTrackColor
     }
 
-    // Used to track the buttonState and update key values whenever the state is changed.  Only the required
-    // values are changed (e.g. going from Inactive -> Downloading will use the same paintColor and buttonIcon, so
-    // there is no need to update them and you can only get to the Downloading state from the Inactive State.)
-    private var buttonState by Delegates.observable<ButtonState>(ButtonState.Disabled) { _, _, new ->
+    // Used to track the buttonState and update key values whenever the state is changed.
+    var buttonState by Delegates.observable<ButtonState>(ButtonState.Disabled) { _, _, new ->
         when (new) {
             is ButtonState.Disabled -> {
-                isEnabled = false
                 paintColor = Color.GRAY
             }
             is ButtonState.Inactive -> {
@@ -120,24 +118,47 @@ class LoadingButton @JvmOverloads constructor(
             }
             is ButtonState.Downloading -> {
                 isEnabled = false
+                paintColor = baseColor
+                buttonIcon =
+                    ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_download_24, null)
+                downloadProgress = 0f
+                sweepAngle = 0f
+                animateProgressTrack()
             }
             is ButtonState.Completed -> {
                 isEnabled = true
                 paintColor = completedColor
                 buttonIcon =
                     ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_check_24, null)
-                // reinitializing to 100% for animation on next download attempt.
-                downloadProgress = 360f
+                downloadProgress = 0f
+                sweepAngle = 0f
             }
             is ButtonState.Failed -> {
                 isEnabled = true
                 paintColor = failedColor
                 buttonIcon =
                     ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_close_24, null)
-                // reinitializing to 100% for animation on next download attempt.
-                downloadProgress = 360f
+                downloadProgress = 0f
+                sweepAngle = 0f
             }
         }
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        // desiredWidth is set to the default button size
+        val desiredWidth = 242
+        val resolvedWidth: Int = resolveSizeAndState(desiredWidth, widthMeasureSpec, 1)
+        val resolvedHeight: Int = resolveSizeAndState(
+            MeasureSpec.getSize(resolvedWidth),
+            heightMeasureSpec,
+            0
+        )
+        radius = (resolvedWidth / 2.0 * 0.95).toFloat()
+        // setting stroke width and shadows based on the radius so that they scale with the size of the button.
+        progressBarPaint.strokeWidth = radius / 25
+        progressTrackPaint.strokeWidth = radius / 25
+        mainCirclePaint.setShadowLayer(radius / 25, 0f, 0f, Color.GRAY)
+        setMeasuredDimension(resolvedWidth, resolvedHeight)
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -156,13 +177,15 @@ class LoadingButton @JvmOverloads constructor(
         when (buttonState) {
             is ButtonState.Downloading -> {
                 canvas.drawCircle(centerWidth, centerHeight, radius, mainCirclePaint)
+                // * 0.98f insets the progressArcs slightly so that they are drawn inside the button
+                // and don't draw over the shadows.
                 progressRectF.set(
                     centerWidth - radius * 0.98f,
                     centerHeight - radius,
                     centerWidth + radius * 0.98f,
                     centerHeight + radius
                 )
-                canvas.drawArc(progressRectF, 0f, 360f, false, progressTrackPaint)
+                canvas.drawArc(progressRectF, -90f, sweepAngle, false, progressTrackPaint)
                 canvas.drawArc(progressRectF, -90f, -downloadProgress, false, progressBarPaint)
                 buttonIcon?.draw(canvas)
             }
@@ -171,23 +194,6 @@ class LoadingButton @JvmOverloads constructor(
                 buttonIcon?.draw(canvas)
             }
         }
-    }
-
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        // minw is set to 2x the default button size, since this view is used as a main focus of the ui
-        val minw = 484
-        val w: Int = resolveSizeAndState(minw, widthMeasureSpec, 1)
-        val h: Int = resolveSizeAndState(
-            MeasureSpec.getSize(w),
-            heightMeasureSpec,
-            0
-        )
-        radius = (w / 2.0 * 0.95).toFloat()
-        // setting stroke width and shadows based on the radius so that they scale with the size of the circle.
-        progressBarPaint.strokeWidth = radius / 25
-        progressTrackPaint.strokeWidth = radius / 25
-        mainCirclePaint.setShadowLayer(radius / 25, 0f, 0f, Color.GRAY)
-        setMeasuredDimension(w, h)
     }
 
     /**
@@ -240,71 +246,84 @@ class LoadingButton @JvmOverloads constructor(
      */
     fun animateToNewState(newState: ButtonState) {
         val oldState = buttonState
-
         if (oldState != newState) {
-            val fadeOutAnimatorSet = AnimatorSet()
-            val colorFadeOut =
-                ObjectAnimator.ofArgb(
-                    this,
-                    "paintColor",
-                    paintColor,
-                    Color.GRAY
-                )
-
-            when (oldState) {
-                is ButtonState.Downloading, is ButtonState.Failed, is ButtonState.Completed -> {
-                    // While in these three states any state change will result in a new icon being displayed
-                    // So we add a fade out animation for the button icon.
-                    val iconFadeOut = ObjectAnimator.ofInt(
-                        this,
-                        "iconAlpha",
-                        iconAlpha,
-                        0
-                    )
-                    fadeOutAnimatorSet.playTogether(colorFadeOut, iconFadeOut)
-                }
-                else -> {
-                    // Icon doesn't change in this scenario so we do not play the iconFadeOut animation
-                    fadeOutAnimatorSet.play(colorFadeOut)
-                }
-            }
-            fadeOutAnimatorSet.apply {
-                duration = 500
-                // We create the fadeIn animations inside of the fadeOutAnimatorSet's doOnEnd since we rely
-                // on updating the buttonState to give us access to the new values to fade into and only want
-                // to update the buttonState once the fadeOutAnimatorSet has completed.
+            createFadeOutAnimation(oldState).apply {
+                duration = 250
                 doOnEnd {
                     buttonState = newState
-                    val fadeInAnimatorSet = AnimatorSet()
-                    val colorFadeIn = ObjectAnimator.ofArgb(
-                        this@LoadingButton,
-                        "paintColor",
-                        Color.GRAY,
-                        paintColor
-                    )
-                    // If we played the iconFadeOut animation, this will animate from 0 to 255 and if we didn't, we're simply
-                    // "animating" from 255 to 255 so there is no need to check the ButtonState before playing this animation.
-                    val iconFadeIn =
-                        ObjectAnimator.ofInt(
-                            this@LoadingButton,
-                            "iconAlpha",
-                            iconAlpha,
-                            255
-                        )
-                    fadeInAnimatorSet.apply {
-                        playTogether(colorFadeIn, iconFadeIn)
-                        duration = 500
-                    }.start()
+                    createFadeInAnimation().start()
                 }
             }.start()
         }
     }
 
-    fun updateButtonState(newState: ButtonState) {
-        buttonState = newState
+    /**
+     * Helper function to create a FadeOutAnimation.  Depending on the oldState, we may not need to fade
+     * out the icon. This creates and sets up the AnimatorSet with the ObjectAnimators needed based on the
+     * oldState.
+     */
+    private fun createFadeOutAnimation(oldState: ButtonState): AnimatorSet {
+        val fadeOutAnimatorSet = AnimatorSet()
+        val colorFadeOut = ObjectAnimator.ofArgb(
+            this,
+            "paintColor",
+            paintColor,
+            Color.GRAY
+        )
+        when (oldState) {
+            is ButtonState.Downloading, is ButtonState.Failed, is ButtonState.Completed -> {
+                val iconFadeOut = ObjectAnimator.ofInt(
+                    this,
+                    "iconAlpha",
+                    iconAlpha,
+                    0
+                )
+                fadeOutAnimatorSet.playTogether(colorFadeOut, iconFadeOut)
+            }
+            else -> {
+                fadeOutAnimatorSet.play(colorFadeOut)
+            }
+        }
+        return fadeOutAnimatorSet
     }
 
-    fun getState(): ButtonState {
-        return buttonState
+    /**
+     * Helper function to create our FadeInAnimation.  Since we are fading in to the default values
+     * (255 alpha and paintColor) we don't need to check buttonState.  If we need to animate, then we run it
+     * and if we don't need to running it simply won't animate anything.
+     */
+    private fun createFadeInAnimation(): AnimatorSet {
+        val fadeInAnimatorSet = AnimatorSet()
+        val colorFadeIn = ObjectAnimator.ofArgb(
+            this,
+            "paintColor",
+            Color.GRAY,
+            paintColor
+        )
+        val iconFadeIn = ObjectAnimator.ofInt(
+            this,
+            "iconAlpha",
+            iconAlpha,
+            255
+        )
+        return fadeInAnimatorSet.apply {
+            playTogether(colorFadeIn, iconFadeIn)
+            duration = 250
+        }
+    }
+
+    /**
+     * Helper function to animate the drawing on the progressTrack when starting a new download.
+     */
+    private fun animateProgressTrack() {
+        ObjectAnimator.ofFloat(
+            this,
+            "sweepAngle",
+            sweepAngle,
+            360f
+        ).apply {
+            duration = 2000
+            interpolator = BounceInterpolator()
+        }.start()
     }
 }

@@ -9,6 +9,7 @@ import android.content.Context.DOWNLOAD_SERVICE
 import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Color
 import android.net.Uri
 import android.os.Environment
 import android.webkit.URLUtil
@@ -60,6 +61,7 @@ class DownloadViewModel(private val app: Application) : AndroidViewModel(app) {
      * keeps track of the download progress via DownloadUtils' getProgressUpdate function.
      */
     fun downloadData(url: String) {
+        _progress.value = 0
         notificationManager.cancelAll()
         val fileName = URLUtil.guessFileName(url, null, null)
 
@@ -112,6 +114,7 @@ class DownloadViewModel(private val app: Application) : AndroidViewModel(app) {
                         title = cursor.getString(titleIndex)
                         filePath = cursor.getString(filePathIndex)
                         status = app.getString(R.string.successful)
+                        statusColor = Color.GREEN
                         size = android.text.format.Formatter.formatShortFileSize(
                             app,
                             cursor.getLong(sizeIndex)
@@ -120,8 +123,11 @@ class DownloadViewModel(private val app: Application) : AndroidViewModel(app) {
                 }
                 DownloadManager.STATUS_FAILED -> {
                     val reasonIndex = cursor.getColumnIndex(DownloadManager.COLUMN_REASON)
+                    val uriIndex = cursor.getColumnIndex(DownloadManager.COLUMN_URI)
                     downloadedFile.apply {
+                        title = URLUtil.guessFileName(cursor.getString(uriIndex), null, null)
                         status = app.getString(R.string.failed)
+                        statusColor = Color.RED
                         reason = "${cursor.getInt(reasonIndex)} error"
                     }
                 }
@@ -152,6 +158,7 @@ class DownloadViewModel(private val app: Application) : AndroidViewModel(app) {
                     downloadedFile.title,
                     "Download ${downloadedFile.status}",
                     notificationMessage,
+                    downloadedFile,
                     app
                 )
             }

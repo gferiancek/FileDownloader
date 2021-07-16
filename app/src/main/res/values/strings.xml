@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">File Downloader</string>
-
     <string name="download_complete_channel_id">download_complete</string>
     <string name="download_complete_channel_name">Download Complete</string>
     <string name="download_complete_channel_description">Shows information about downloaded files.</string>
@@ -10,4 +9,11 @@
     <string name="description">Welcome to the File Downloader app. Select one of the two files below to download them to your device. One is designed to fail to show off all states of the custom download button.</string>
     <string name="mb_100_text">100mb - Pass</string>
     <string name="gb_1_text">1gb - Fail</string>
+    <string name="file_path">FILEPATH</string>
+    <string name="status">STATUS</string>
+    <string name="reason">REASON</string>
+    <string name="size">SIZE</string>
+    <string name="file_name">FILENAME</string>
+    <string name="no_file_selected">Please choose one of the above files to download.</string>
+    <string name="detail_content_description">Clicking this left chevron will return to the Download screen.</string>
 </resources>

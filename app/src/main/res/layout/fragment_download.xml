@@ -2,32 +2,9 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-
-        <variable
-            name="viewModel"
-            type="com.example.filedownloader.viewmodel.DownloadViewModel" />
-
-    </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <TextView
-            android:id="@+id/tv_description"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_large"
-            android:layout_marginEnd="@dimen/margin_large"
-            android:textSize="@dimen/text_size"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:text="@string/description"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/radio_group"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
 
         <RadioGroup
             android:id="@+id/radio_group"
@@ -35,40 +12,63 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_large"
             android:layout_marginEnd="@dimen/margin_large"
-            app:layout_constraintVertical_chainStyle="packed"
-            app:layout_constraintTop_toBottomOf="@id/tv_description"
             app:layout_constraintBottom_toTopOf="@id/button"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintTop_toBottomOf="@id/tv_description"
+            app:layout_constraintVertical_chainStyle="packed">
 
             <RadioButton
                 android:id="@+id/mb_100"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:tag="https://speed.hetzner.de/100MB.bin"
                 android:text="@string/mb_100_text"
-                android:textSize="@dimen/text_size"
-                android:tag="https://speed.hetzner.de/100MB.bin" />
+                android:textSize="@dimen/text_normal" />
 
             <RadioButton
                 android:id="@+id/gb_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:tag="https://speed.hetzner.de/1GB"
                 android:text="@string/gb_1_text"
-                android:textSize="@dimen/text_size"
-                android:tag="https://speed.hetzner.de/fail" />
+                android:textSize="@dimen/text_normal" />
         </RadioGroup>
 
+        <TextView
+            android:id="@+id/tv_description"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_large"
+            android:layout_marginEnd="@dimen/margin_large"
+            android:text="@string/description"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_normal"
+            app:layout_constraintBottom_toTopOf="@id/radio_group"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <com.example.filedownloader.views.LoadingButton
-            android:layout_marginStart="@dimen/margin_extra_large"
-            android:layout_marginEnd="@dimen/margin_extra_large"
-            android:layout_marginBottom="@dimen/margin_extra_large"
             android:id="@+id/button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_extra_large"
+            android:layout_marginEnd="@dimen/margin_extra_large"
+            android:layout_marginBottom="@dimen/margin_extra_large"
             android:onClick="@{() -> viewModel.onStartDownload()}"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.example.filedownloader.viewmodel.DownloadViewModel" />
+
+    </data>
 </layout>

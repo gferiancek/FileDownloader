@@ -4,10 +4,12 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import androidx.core.app.NotificationCompat
 import androidx.navigation.NavDeepLinkBuilder
 import com.example.filedownloader.MainActivity
 import com.example.filedownloader.R
+import com.example.filedownloader.model.DownloadedFile
 import com.example.filedownloader.receiver.CancelReceiver
 
 const val NOTIFICATION_ID = 0
@@ -17,9 +19,14 @@ fun NotificationManager.sendDownloadCompletedNotification(
     title: String,
     status: String,
     message: String,
+    downloadedFile: DownloadedFile,
     appContext: Context
 ) {
+    val bundle = Bundle()
+    bundle.putParcelable("downloadedFile", downloadedFile)
+
     val pendingIntent = NavDeepLinkBuilder(appContext)
+        .setArguments(bundle)
         .setComponentName(MainActivity::class.java)
         .setGraph(R.navigation.nav_graph)
         .setDestination(R.id.detailFragment)

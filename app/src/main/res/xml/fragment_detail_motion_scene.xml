@@ -1,0 +1,610 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:motion="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <Transition
+        android:id="@+id/animateIn"
+        motion:constraintSetEnd="@id/end"
+        motion:constraintSetStart="@id/start"
+        motion:duration="1500"
+        motion:autoTransition="animateToEnd">
+        <KeyFrameSet>
+
+            <KeyAttribute
+                motion:motionTarget="@+id/tv_title"
+                motion:framePosition="65"
+                android:alpha="0" />
+            <KeyPosition
+                motion:motionTarget="@+id/white_backdrop"
+                motion:framePosition="40"
+                motion:keyPositionType="parentRelative"
+                motion:percentX="2.5"
+                motion:percentY="1" />
+            <KeyPosition
+                motion:motionTarget="@+id/tv_title_label"
+                motion:framePosition="40"
+                motion:keyPositionType="deltaRelative"
+                motion:percentX="1"
+                motion:percentY="1" />
+            <KeyAttribute
+                motion:motionTarget="@+id/tv_title_label"
+                motion:framePosition="45"
+                android:translationX="30dp" />
+            <KeyPosition
+                motion:motionTarget="@+id/tv_file_path_label"
+                motion:framePosition="40"
+                motion:keyPositionType="deltaRelative"
+                motion:percentX="1"
+                motion:percentY="11" />
+            <KeyAttribute
+                motion:motionTarget="@+id/tv_file_path_label"
+                motion:framePosition="50"
+                android:translationX="30dp" />
+            <KeyPosition
+                motion:motionTarget="@+id/tv_status_label"
+                motion:framePosition="40"
+                motion:keyPositionType="deltaRelative"
+                motion:percentX="1"
+                motion:percentY="1" />
+            <KeyAttribute
+                motion:motionTarget="@+id/tv_status_label"
+                motion:framePosition="55"
+                android:translationX="30dp" />
+            <KeyPosition
+                motion:motionTarget="@+id/tv_reason_label"
+                motion:framePosition="40"
+                motion:keyPositionType="deltaRelative"
+                motion:percentX="1"
+                motion:percentY="1" />
+            <KeyAttribute
+                motion:motionTarget="@+id/tv_reason_label"
+                motion:framePosition="60"
+                android:translationX="30dp" />
+            <KeyPosition
+                motion:motionTarget="@+id/tv_size_label"
+                motion:framePosition="40"
+                motion:keyPositionType="deltaRelative"
+                motion:percentX="1"
+                motion:percentY="1" />
+            <KeyAttribute
+                motion:motionTarget="@+id/tv_size_label"
+                motion:framePosition="65"
+                android:translationX="30dp" />
+            <KeyAttribute
+                motion:motionTarget="@+id/tv_file_path"
+                motion:framePosition="65"
+                android:alpha="0" />
+            <KeyAttribute
+                motion:motionTarget="@+id/tv_status"
+                motion:framePosition="65"
+                android:alpha="0" />
+            <KeyAttribute
+                motion:motionTarget="@+id/tv_reason"
+                motion:framePosition="65"
+                android:alpha="0" />
+            <KeyAttribute
+                motion:motionTarget="@+id/tv_size"
+                motion:framePosition="65"
+                android:alpha="0" />
+            <KeyPosition
+                motion:motionTarget="@+id/status_indicator"
+                motion:framePosition="90"
+                motion:keyPositionType="deltaRelative"
+                motion:percentX="1.2"
+                motion:percentY="1" />
+        </KeyFrameSet>
+    </Transition>
+
+    <Transition
+        android:id="@+id/fragment_switch"
+        motion:constraintSetEnd="@id/close"
+        motion:constraintSetStart="@id/end"
+        motion:duration="1000">
+        <OnClick
+            motion:targetId="@id/status_indicator"
+            motion:clickAction="transitionToEnd" />
+        <KeyFrameSet>
+            <KeyAttribute
+                motion:motionTarget="@+id/fake_download_layout"
+                motion:framePosition="95"
+                android:translationX="-25dp" />
+            <KeyPosition
+                motion:motionTarget="@+id/white_backdrop"
+                motion:framePosition="80"
+                motion:keyPositionType="parentRelative"
+                motion:percentX="0"
+                motion:percentY="1" />
+            <KeyPosition
+                motion:motionTarget="@+id/status_indicator"
+                motion:framePosition="80"
+                motion:keyPositionType="parentRelative"
+                motion:percentX="-0.25" />
+            <KeyPosition
+                motion:motionTarget="@+id/tv_title"
+                motion:framePosition="80"
+                motion:keyPositionType="parentRelative"
+                motion:percentX="0" />
+            <KeyPosition
+                motion:motionTarget="@+id/tv_file_path"
+                motion:framePosition="80"
+                motion:keyPositionType="parentRelative"
+                motion:percentX="0" />
+            <KeyPosition
+                motion:motionTarget="@+id/tv_status"
+                motion:framePosition="80"
+                motion:keyPositionType="parentRelative"
+                motion:percentX="0" />
+            <KeyPosition
+                motion:motionTarget="@+id/tv_reason"
+                motion:framePosition="80"
+                motion:keyPositionType="parentRelative"
+                motion:percentX="0" />
+            <KeyPosition
+                motion:motionTarget="@+id/tv_size"
+                motion:framePosition="80"
+                motion:keyPositionType="parentRelative"
+                motion:percentX="0" />
+        </KeyFrameSet>
+    </Transition>
+
+    <ConstraintSet android:id="@+id/start">
+        <Constraint
+            android:id="@id/tv_title_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_normal"
+            android:text="@string/file_name"
+            android:textAlignment="textStart"
+            android:textSize="@dimen/text_large"
+            android:visibility="invisible"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv_title"
+            app:layout_constraintEnd_toStartOf="@id/tv_title"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Constraint
+            android:id="@id/tv_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_extra_large"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="@dimen/margin_extra_large"
+            app:layout_constraintBottom_toTopOf="@id/tv_file_path"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_title_label"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            android:alpha="0" />
+
+        <Constraint
+            android:id="@id/tv_file_path_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_normal"
+            android:text="@string/file_path"
+            android:textAlignment="textStart"
+            android:textSize="@dimen/text_large"
+            app:layout_constraintBottom_toBottomOf="@id/tv_file_path"
+            app:layout_constraintEnd_toEndOf="@id/tv_title_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_file_path"
+            android:visibility="invisible" />
+
+        <Constraint
+            android:id="@id/tv_file_path"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_extra_large"
+            android:layout_marginEnd="@dimen/margin_normal"
+            android:layout_marginBottom="@dimen/margin_extra_large"
+            app:layout_constraintBottom_toTopOf="@id/tv_status"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/tv_title"
+            app:layout_constraintTop_toBottomOf="@id/tv_title"
+            android:alpha="0" />
+
+        <Constraint
+            android:id="@id/tv_status_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_normal"
+            android:text="@string/status"
+            android:textAlignment="textStart"
+            android:textSize="@dimen/text_large"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv_status"
+            app:layout_constraintEnd_toEndOf="@id/tv_title_label"
+            app:layout_constraintStart_toStartOf="parent"
+            android:visibility="invisible" />
+
+        <Constraint
+            android:id="@id/tv_status"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_extra_large"
+            android:layout_marginEnd="@dimen/margin_normal"
+            android:layout_marginBottom="@dimen/margin_extra_large"
+            app:layout_constraintBottom_toTopOf="@id/tv_reason"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/tv_title"
+            app:layout_constraintTop_toBottomOf="@id/tv_file_path"
+            android:alpha="0" />
+
+        <Constraint
+            android:id="@id/tv_reason_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_normal"
+            android:text="@string/reason"
+            android:textAlignment="textStart"
+            android:textSize="@dimen/text_large"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv_reason"
+            app:layout_constraintEnd_toEndOf="@id/tv_title_label"
+            app:layout_constraintStart_toStartOf="parent"
+            android:visibility="invisible" />
+
+        <Constraint
+            android:id="@id/tv_reason"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_extra_large"
+            android:layout_marginEnd="@dimen/margin_normal"
+            android:layout_marginBottom="@dimen/margin_extra_large"
+            app:layout_constraintBottom_toTopOf="@id/tv_size"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/tv_title"
+            app:layout_constraintTop_toBottomOf="@id/tv_status"
+            android:alpha="0" />
+
+        <Constraint
+            android:id="@id/tv_size_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_normal"
+            android:text="@string/size"
+            android:textAlignment="textStart"
+            android:textSize="@dimen/text_large"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv_size"
+            app:layout_constraintEnd_toEndOf="@id/tv_title_label"
+            app:layout_constraintStart_toStartOf="parent"
+            android:visibility="invisible" />
+
+        <Constraint
+            android:id="@id/tv_size"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_extra_large"
+            android:layout_marginEnd="@dimen/margin_normal"
+            android:layout_marginBottom="@dimen/margin_extra_large"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_title_label"
+            app:layout_constraintTop_toBottomOf="@id/tv_reason"
+            android:alpha="0" />
+
+        <Constraint
+            android:id="@id/white_backdrop"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:elevation="@dimen/backdrop_elevation"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintStart_toStartOf="parent" />
+
+        <Constraint
+            android:id="@+id/fake_download_layout"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:translationX="@dimen/x_offscreen_right"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="gone"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:alpha="0" />
+        <Constraint
+            android:layout_height="0dp"
+            motion:layout_constraintTop_toTopOf="@+id/tv_status_label"
+            motion:layout_constraintBottom_toBottomOf="@+id/tv_status_label"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="0dp"
+            android:id="@+id/status_indicator" />
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/end">
+        <Constraint
+            android:id="@id/tv_title_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_normal"
+            android:text="@string/file_name"
+            android:textAlignment="textStart"
+            android:textSize="@dimen/text_large"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv_title"
+            app:layout_constraintEnd_toStartOf="@id/tv_title"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Constraint
+            android:id="@id/tv_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_extra_large"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="@dimen/margin_extra_large"
+            app:layout_constraintBottom_toTopOf="@id/tv_file_path"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_title_label"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            android:alpha="1" />
+
+        <Constraint
+            android:id="@id/tv_file_path_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_normal"
+            android:text="@string/file_path"
+            android:textAlignment="textStart"
+            android:textSize="@dimen/text_large"
+            app:layout_constraintBottom_toBottomOf="@id/tv_file_path"
+            app:layout_constraintEnd_toEndOf="@id/tv_title_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_file_path" />
+
+        <Constraint
+            android:id="@id/tv_file_path"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_extra_large"
+            android:layout_marginEnd="@dimen/margin_normal"
+            android:layout_marginBottom="@dimen/margin_extra_large"
+            app:layout_constraintBottom_toTopOf="@id/tv_status"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/tv_title"
+            app:layout_constraintTop_toBottomOf="@id/tv_title"
+            android:alpha="1" />
+
+        <Constraint
+            android:id="@id/tv_status_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_normal"
+            android:text="@string/status"
+            android:textAlignment="textStart"
+            android:textSize="@dimen/text_large"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv_status"
+            app:layout_constraintEnd_toEndOf="@id/tv_title_label"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Constraint
+            android:id="@id/tv_status"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_extra_large"
+            android:layout_marginEnd="@dimen/margin_normal"
+            android:layout_marginBottom="@dimen/margin_extra_large"
+            app:layout_constraintBottom_toTopOf="@id/tv_reason"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/tv_title"
+            app:layout_constraintTop_toBottomOf="@id/tv_file_path" />
+
+        <Constraint
+            android:id="@id/tv_reason_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_normal"
+            android:text="@string/reason"
+            android:textAlignment="textStart"
+            android:textSize="@dimen/text_large"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv_reason"
+            app:layout_constraintEnd_toEndOf="@id/tv_title_label"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Constraint
+            android:id="@id/tv_reason"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_extra_large"
+            android:layout_marginEnd="@dimen/margin_normal"
+            android:layout_marginBottom="@dimen/margin_extra_large"
+            app:layout_constraintBottom_toTopOf="@id/tv_size"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/tv_title"
+            app:layout_constraintTop_toBottomOf="@id/tv_status" />
+
+        <Constraint
+            android:id="@id/tv_size_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_normal"
+            android:text="@string/size"
+            android:textAlignment="textStart"
+            android:textSize="@dimen/text_large"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv_size"
+            app:layout_constraintEnd_toEndOf="@id/tv_title_label"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Constraint
+            android:id="@id/tv_size"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_extra_large"
+            android:layout_marginEnd="@dimen/margin_normal"
+            android:layout_marginBottom="@dimen/margin_extra_large"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_title_label"
+            app:layout_constraintTop_toBottomOf="@id/tv_reason" />
+
+        <Constraint
+            android:layout_height="match_parent"
+            motion:layout_constraintStart_toEndOf="@id/tv_title_label"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="0dp"
+            android:elevation="@dimen/backdrop_elevation"
+            android:id="@id/white_backdrop" />
+        <Constraint
+            android:id="@id/fake_download_layout"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:translationX="@dimen/x_offscreen_right"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="invisible"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:alpha="0" />
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/close">
+        <Constraint
+            android:id="@+id/tv_title_label"
+            motion:layout_constraintEnd_toStartOf="@+id/tv_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            motion:layout_constraintBaseline_toBaselineOf="@+id/tv_title"
+            motion:layout_constraintHorizontal_chainStyle="spread"
+            android:layout_marginStart="@dimen/margin_normal"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:translationX="@dimen/x_offscreen_left" />
+        <Constraint
+            android:id="@+id/tv_title"
+            android:elevation="@dimen/text_elevation"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintStart_toEndOf="@+id/tv_title_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_extra_large"
+            motion:layout_constraintBottom_toTopOf="@+id/tv_file_path"
+            android:layout_marginEnd="@dimen/margin_normal"
+            motion:layout_constraintVertical_chainStyle="packed"
+            motion:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="@dimen/margin_extra_large"
+            android:translationX="@dimen/x_offscreen_left" />
+        <Constraint
+            android:id="@+id/tv_file_path_label"
+            motion:layout_constraintEnd_toEndOf="@+id/tv_title_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            motion:layout_constraintBottom_toBottomOf="@+id/tv_file_path"
+            android:layout_marginStart="@dimen/margin_normal"
+            motion:layout_constraintTop_toTopOf="@+id/tv_file_path"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:translationX="@dimen/x_offscreen_left" />
+        <Constraint
+            android:id="@+id/tv_file_path"
+            android:elevation="@dimen/text_elevation"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_extra_large"
+            motion:layout_constraintBottom_toTopOf="@+id/tv_status"
+            android:layout_marginEnd="@dimen/margin_normal"
+            motion:layout_constraintTop_toBottomOf="@+id/tv_title"
+            motion:layout_constraintStart_toStartOf="@+id/tv_title"
+            android:layout_marginTop="@dimen/margin_extra_large"
+            android:translationX="@dimen/x_offscreen_left" />
+        <Constraint
+            android:id="@+id/tv_status_label"
+            motion:layout_constraintEnd_toEndOf="@+id/tv_title_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            motion:layout_constraintBaseline_toBaselineOf="@+id/tv_status"
+            android:layout_marginStart="@dimen/margin_normal"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:translationX="@dimen/x_offscreen_left" />
+        <Constraint
+            android:id="@+id/tv_status"
+            android:elevation="@dimen/text_elevation"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_extra_large"
+            motion:layout_constraintBottom_toTopOf="@+id/tv_reason"
+            android:layout_marginEnd="@dimen/margin_normal"
+            motion:layout_constraintTop_toBottomOf="@+id/tv_file_path"
+            motion:layout_constraintStart_toStartOf="@+id/tv_title"
+            android:layout_marginTop="@dimen/margin_extra_large"
+            android:translationX="@dimen/x_offscreen_left" />
+        <Constraint
+            android:id="@+id/tv_reason_label"
+            motion:layout_constraintEnd_toEndOf="@+id/tv_title_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            motion:layout_constraintBaseline_toBaselineOf="@+id/tv_reason"
+            android:layout_marginStart="@dimen/margin_normal"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:translationX="@dimen/x_offscreen_left" />
+        <Constraint
+            android:id="@+id/tv_reason"
+            android:elevation="@dimen/text_elevation"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_extra_large"
+            motion:layout_constraintBottom_toTopOf="@+id/tv_size"
+            android:layout_marginEnd="@dimen/margin_normal"
+            motion:layout_constraintTop_toBottomOf="@+id/tv_status"
+            motion:layout_constraintStart_toStartOf="@+id/tv_title"
+            android:layout_marginTop="@dimen/margin_extra_large"
+            android:translationX="@dimen/x_offscreen_left" />
+        <Constraint
+            android:id="@+id/tv_size_label"
+            motion:layout_constraintEnd_toEndOf="@+id/tv_title_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            motion:layout_constraintBaseline_toBaselineOf="@+id/tv_size"
+            android:layout_marginStart="@dimen/margin_normal"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:translationX="@dimen/x_offscreen_left" />
+        <Constraint
+            android:id="@+id/tv_size"
+            android:elevation="@dimen/text_elevation"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintStart_toEndOf="@+id/tv_title_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="@dimen/margin_extra_large"
+            android:layout_marginEnd="@dimen/margin_normal"
+            motion:layout_constraintTop_toBottomOf="@+id/tv_reason"
+            android:layout_marginTop="@dimen/margin_extra_large"
+            android:translationX="@dimen/x_offscreen_left" />
+        <Constraint
+            android:id="@+id/white_backdrop"
+            android:elevation="@dimen/backdrop_elevation"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintStart_toEndOf="@+id/tv_title_label"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintTop_toTopOf="parent"
+            android:translationX="@dimen/x_offscreen_left" />
+        <Constraint
+            android:id="@+id/status_indicator"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            motion:layout_constraintBottom_toBottomOf="@+id/tv_status_label"
+            motion:layout_constraintTop_toTopOf="@+id/tv_status_label"
+            motion:layout_constraintStart_toStartOf="@id/vertical_43"
+            android:translationX="@dimen/x_offscreen_left" />
+        <Constraint
+            android:id="@+id/vertical_43"
+            motion:layout_constraintGuide_percent=".43"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:translationX="@dimen/x_offscreen_left" />
+        <Constraint
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="visible"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:id="@+id/fake_download_layout"
+            android:alpha="1" />
+    </ConstraintSet>
+</MotionScene>
